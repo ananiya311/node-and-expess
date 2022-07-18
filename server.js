@@ -8,6 +8,9 @@ var myApp = require('./myApp');
 var express = require('express');
 var app = express();
 require('dotenv').config()
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use((req, res, next)=>{
   console.log(`${req.method} ${req.path} - ${req.ip}`)
@@ -35,6 +38,21 @@ app.get("/now", (req, res, next)=>{
   res.json({time: req.time})
 })
 
+app.get('/name', (req, res)=>{
+  var {first:first, last:last} = req.query
+  res.json({name:`${first} ${last}`})
+})
+// app.get("/name", function(req, res) {
+//   var firstName = req.query.first;
+//   var lastName = req.query.last;
+//   res.json({
+//     name: `${firstName} ${lastName}`
+//   });
+// });
+app.post("/name",(req, res)=> {
+  var string = req.body.first + " " + req.body.last;
+  res.json({name:string});
+});
 if (!process.env.DISABLE_XORIGIN) {
   app.use(function(req, res, next) {
     var allowedOrigins = ['https://narrow-plane.gomix.me', 'https://www.freecodecamp.com'];
